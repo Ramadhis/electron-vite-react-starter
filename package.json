@@ -1,0 +1,68 @@
+{
+  "name": "coba-desktop-app",
+  "private": true,
+  "version": "0.0.0",
+  "productName": "coba-app",
+  "description": "<your project description>",
+  "author": "<author of app>",
+  "build": {
+    "appId": "coba-electron-app",
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "files": [
+      "dist/**/*",
+      "public/electron.js",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "dist"
+    }
+  },
+  "type": "module",
+  "main": "public/electron.js",
+  "homepage": "./",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "electron-build": "electron-builder",
+    "release": "yarn react-build && electron-builder --publish=always",
+    "compile": "electron-webpack",
+    "buildn": "yarn build  && yarn electron-build",
+    "electron-pack": "build -c.extraMetadata.main=build/Main.js",
+    "start": "concurrently \"cross-env BROWSER=none yarn vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "package": "electron-builder --win -c.extraMetadata.main=build/electron.js --publish never",
+    "preelectron-pack": "npm run build",
+    "electron-packe": " electron-builder -c.extraMetadata.main=dist/electron.js"
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "electron-is-dev": "^3.0.1",
+    "electron-webpack": "^2.8.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "wait-on": "^8.0.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^34.1.1",
+    "electron-builder": "^25.1.8",
+    "eslint": "^9.19.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "globals": "^15.14.0",
+    "vite": "^6.1.0",
+    "webpack": "^5.97.1"
+  }
+}
