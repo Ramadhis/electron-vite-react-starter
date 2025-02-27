@@ -1,6 +1,7 @@
 import electron from "electron";
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+const ipcMain = electron.ipcMain;
 import path from "path";
 import { join } from "path";
 import isDev from "electron-is-dev";
@@ -15,6 +16,9 @@ function createWindow() {
     width: 900,
     height: 680,
     webPreferences: {
+      preload: path.join(app.getAppPath(), "public/preload.mjs"),
+      contextIsolation: true,
+      enableRemoteModule: true,
       nodeIntegration: true,
     },
   });
@@ -47,4 +51,8 @@ app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.on("submit:tes", (event, opts) => {
+  console.log(event, opts);
 });

@@ -15,6 +15,7 @@
     "files": [
       "dist/**/*",
       "public/electron.js",
+      "public/preload.mjs",
       "node_modules/**/*",
       "package.json"
     ],
@@ -42,6 +43,7 @@
     "electron-packe": " electron-builder -c.extraMetadata.main=dist/electron.js"
   },
   "dependencies": {
+    "@electron-toolkit/preload": "^3.0.1",
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
     "electron-is-dev": "^3.0.1",

@@ -5,10 +5,24 @@ import "./App.css";
 
 function App() {
   const [count, setCount] = useState(0);
+  const ipcRenderer = window.ipcRenderer;
+  const elec = window.dir;
+  const onSubmit = (value) => {
+    return ipcRenderer.send("submit:tes", value);
+  };
 
   return (
     <>
       <div>
+        <div>{elec.data()}</div>
+        <button
+          onClick={(e) => {
+            e.preventDefault;
+            return onSubmit("tes");
+          }}
+        >
+          tes
+        </button>
         <a href="https://vite.dev" target="_blank">
           <img src={"./assets/logo.png"} className="logo" alt="Vite logo" />
         </a>
