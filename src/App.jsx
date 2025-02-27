@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-
 function App() {
   const [count, setCount] = useState(0);
   const ipcRenderer = window.ipcRenderer;
+  const users = window.users;
+  const getUser = users.getUser();
   const elec = window.dir;
   const onSubmit = (value) => {
     return ipcRenderer.send("submit:tes", value);
@@ -15,6 +16,15 @@ function App() {
     <>
       <div>
         <div>{elec.data()}</div>
+        <div>
+          {getUser.map((user) => {
+            return (
+              <div>
+                {user.id} - {user.name}
+              </div>
+            );
+          })}
+        </div>
         <button
           onClick={(e) => {
             e.preventDefault;

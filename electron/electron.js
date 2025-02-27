@@ -1,7 +1,4 @@
-import electron from "electron";
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const ipcMain = electron.ipcMain;
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 import { join } from "path";
 import isDev from "electron-is-dev";
@@ -16,7 +13,7 @@ function createWindow() {
     width: 900,
     height: 680,
     webPreferences: {
-      preload: path.join(app.getAppPath(), "public/preload.mjs"),
+      preload: path.join(app.getAppPath(), "electron/preload.mjs"),
       contextIsolation: true,
       enableRemoteModule: true,
       nodeIntegration: true,
