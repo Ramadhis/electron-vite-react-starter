@@ -3,6 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 function App() {
+  console.log("tes", process.env.NODE_ENV);
   const [count, setCount] = useState(0);
   const ipcRenderer = window.ipcRenderer;
   const users = window.users;
@@ -17,15 +18,16 @@ function App() {
       <div>
         <div>{elec.data()}</div>
         <div>
-          {getUser.map((user) => {
+          {getUser.map((user, index) => {
             return (
-              <div>
+              <div key={index}>
                 {user.id} - {user.name}
               </div>
             );
           })}
         </div>
         <button
+          className="text-3xl font-bold underline"
           onClick={(e) => {
             e.preventDefault;
             return onSubmit("tes");
