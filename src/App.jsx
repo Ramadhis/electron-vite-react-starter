@@ -3,15 +3,37 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 function App() {
-  console.log("tes", process.env.NODE_ENV);
+  // console.log("tes", process.env.NODE_ENV);
   const [count, setCount] = useState(0);
   const ipcRenderer = window.ipcRenderer;
+  const electronAPI = window.electron.ipcRenderer;
+  const [info, setInfo] = useState({
+    status: false,
+    data: [],
+  });
   const users = window.users;
   const getUser = users.getUser();
   const elec = window.dir;
   const onSubmit = (value) => {
-    return ipcRenderer.send("submit:tes", value);
+    return electronAPI.send("submit:tes", value);
   };
+
+  electronAPI.on("submit:success", (ev, args) => {
+    setInfo((prev) => {
+      return { status: true, data: args };
+    });
+  });
+
+  useEffect(() => {
+    if (info.status == true) {
+      console.log(info);
+      setInfo((prev) => {
+        return { status: false, data: [] };
+      });
+      console.log("submit success");
+      alert("submit success");
+    }
+  }, [info]);
 
   return (
     <>
@@ -30,10 +52,11 @@ function App() {
           className="text-3xl font-bold underline"
           onClick={(e) => {
             e.preventDefault;
+            console.log("clicked");
             return onSubmit("tes");
           }}
         >
-          tes
+          tes button AAAA
         </button>
         <a href="https://vite.dev" target="_blank">
           <img src={"./assets/logo.png"} className="logo" alt="Vite logo" />

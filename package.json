@@ -18,7 +18,8 @@
       "electron/preload.mjs",
       "node_modules/**/*",
       "package.json",
-      "model/"
+      "model/",
+      "controller/"
     ],
     "extraResources": [
       "./electron/data.db"
@@ -55,6 +56,7 @@
     "better-sqlite3": "^11.8.1",
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
+    "daisyui": "^5.0.0-beta.9",
     "dotenv": "^16.4.7",
     "electron-is-dev": "^3.0.1",
     "electron-webpack": "^2.8.2",

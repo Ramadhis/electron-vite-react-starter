@@ -5,6 +5,7 @@ import isDev from "electron-is-dev";
 import * as url from "url";
 let mainWindow;
 import { fileURLToPath } from "url";
+import { submitAddUser } from "../controller/UserController.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -40,9 +41,9 @@ app.on("ready", () => {
   return createWindow();
 });
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+  // if (process.platform !== "darwin") {
+  app.quit();
+  // }
 });
 app.on("activate", () => {
   if (mainWindow === null) {
@@ -50,6 +51,4 @@ app.on("activate", () => {
   }
 });
 
-ipcMain.on("submit:tes", (event, opts) => {
-  console.log(event, opts);
-});
+ipcMain.on("submit:tes", (ev, opts) => submitAddUser(ev, opts));
