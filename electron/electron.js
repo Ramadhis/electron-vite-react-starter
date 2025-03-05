@@ -5,7 +5,8 @@ import isDev from "electron-is-dev";
 import * as url from "url";
 let mainWindow;
 import { fileURLToPath } from "url";
-import { submitAddUser } from "../controller/UserController.js";
+import { submitAddUser } from "../backend/controller/UserController.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

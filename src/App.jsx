@@ -5,7 +5,6 @@ import "./App.css";
 function App() {
   // console.log("tes", process.env.NODE_ENV);
   const [count, setCount] = useState(0);
-  const ipcRenderer = window.ipcRenderer;
   const electronAPI = window.electron.ipcRenderer;
   const [info, setInfo] = useState({
     status: false,
