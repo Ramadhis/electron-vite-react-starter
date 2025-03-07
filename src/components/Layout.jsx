@@ -1,32 +1,33 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
+import Sidebar from "./Sidebar";
 import Header from "./Header";
-const Dashboard = () => {
+
+const Layout = () => {
   return (
     <div className="h-screen w-[100%]">
       <div className="h-full flex">
-        <div className="h-full w-50 flex-none border-r shadow-sm">
-          <img src={profile} alt="" />
-          <div className="p-4 pb-2 flex justify-between items-center">
-            <h1>AAA</h1>
-          </div>
-        </div>
-        <div className="flex-initial p-4 w-full">
-          <h1 class="text-3xl font-bold underline text-red-600">Hello world!</h1>
-          <button class="btn w-full">Button</button>
-          <ul>
+        <Sidebar />
+        <div className="flex-initial w-full ps-50">
+          <Header />
+          <div className="p-2">
+            {/* <ul>
             <li>
               <Link to="/">to Dashboard</Link>
             </li>
             <li>
               <Link to="/user-management">to User Management</Link>
             </li>
-          </ul>
-          <Outlet />
+          </ul> */}
+
+            <div className="w-full ps-2">
+              <Outlet />
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default Layout;

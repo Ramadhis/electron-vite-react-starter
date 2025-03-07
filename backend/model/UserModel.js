@@ -1,4 +1,4 @@
-import { db } from "./connection.js";
+import { db } from "../../database/connection.js";
 
 const getUser = () => {
   const sql = `

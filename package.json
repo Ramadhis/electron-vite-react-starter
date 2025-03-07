@@ -21,7 +21,7 @@
       "backend/"
     ],
     "extraResources": [
-      "./electron/data.db"
+      "./database/data.db"
     ],
     "directories": {
       "output": "release",
@@ -51,6 +51,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron/rebuild": "^3.7.1",
+    "@heroicons/react": "^2.2.0",
     "@tailwindcss/vite": "^4.0.9",
     "better-sqlite3": "^11.8.1",
     "concurrently": "^9.1.2",
