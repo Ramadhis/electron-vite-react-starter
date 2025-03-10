@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 import os from "os";
-import { getUser } from "../backend/model/UserModel.js";
+import { getUser, backup } from "../backend/model/UserModel.js";
 // Custom APIs for renderer
 const api = {};
 
@@ -24,4 +24,5 @@ contextBridge.exposeInMainWorld("dir", { data: () => os.homedir() });
 
 contextBridge.exposeInMainWorld("users", {
   getUser: () => getUser(),
+  backup: () => backup(),
 });

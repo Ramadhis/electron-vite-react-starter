@@ -18,7 +18,8 @@
       "electron/preload.mjs",
       "node_modules/**/*",
       "package.json",
-      "backend/"
+      "backend/",
+      "database/"
     ],
     "extraResources": [
       "./database/data.db"
@@ -58,6 +59,7 @@
     "cross-env": "^7.0.3",
     "daisyui": "^5.0.0-beta.9",
     "dotenv": "^16.4.7",
+    "electron-dl": "^4.0.0",
     "electron-is-dev": "^3.0.1",
     "electron-webpack": "^2.8.2",
     "formik": "^2.4.6",
