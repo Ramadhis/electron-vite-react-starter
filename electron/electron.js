@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import path from "path";
 import { join } from "path";
@@ -20,6 +21,7 @@ function createWindow() {
       contextIsolation: true,
       enableRemoteModule: true,
       nodeIntegration: true,
+      sandbox: false,
     },
   });
   if (isDev) {
@@ -39,7 +41,8 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
   mainWindow.on("closed", () => (mainWindow = null));
 }
-app.on("ready", () => {
+
+app.whenReady().then(() => {
   return createWindow();
 });
 app.on("window-all-closed", () => {
@@ -53,7 +56,10 @@ app.on("activate", () => {
   }
 });
 
-ipcMain.on("submit:tes", (ev, opts) => submitAddUser(ev, opts));
+ipcMain.on("submit:addUser", (ev, opts) => {
+  ev.preventDefault();
+  submitAddUser(ev, opts);
+});
 ipcMain.on("submit:backup", (ev, opts) => backupDB(ev, opts));
 ipcMain.on("submit:swapDb", (ev, opts) => swapSqlite(ev, opts));
 ipcMain.on("selectDirectory", (ev, opt) => selectDirectory(ev, opt));

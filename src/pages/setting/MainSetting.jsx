@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import Content from "../../components/Content";
 
@@ -6,6 +6,19 @@ const MainSetting = () => {
   const electronAPI = window.electron.ipcRenderer;
   const [directorySelected, setDirectorySelected] = useState("");
   const [dbFileSelected, setDbFileSelected] = useState("");
+  const [info, setInfo] = useState({
+    status: false,
+    data: [],
+  });
+
+  useEffect(() => {
+    if (info.status == true) {
+      alert(info.message);
+      setInfo((prev) => {
+        return { status: false, data: [] };
+      });
+    }
+  }, [info]);
 
   const selectDirectory = (value) => {
     return electronAPI.send("selectDirectory", value);
@@ -17,6 +30,27 @@ const MainSetting = () => {
       setDirectorySelected(args.data.directory[0]);
     } else {
       alert(args.errors);
+    }
+  });
+
+  electronAPI.on("backup:success", (ev, args) => {
+    // console.log(args);
+    if (args.success == true) {
+      setInfo((prev) => {
+        return { status: true, data: args, message: "backup success" };
+      });
+    } else {
+      alert(args.errors);
+    }
+  });
+  electronAPI.on("swap:success", (ev, args) => {
+    // console.log(args);
+    if (args.success == true) {
+      setInfo((prev) => {
+        return { status: true, data: args, message: "swap success, close the application and then run it again" };
+      });
+    } else {
+      alert(args.message);
     }
   });
 
@@ -73,7 +107,7 @@ const MainSetting = () => {
         <div className="flex items-end mt-5 mb-5">
           <div className=" me-2">
             {" "}
-            <div className="text-sm font-bold w-full mb-2"> swap sqlite database with the one you saved before </div>
+            <div className="text-sm font-bold w-full mb-2"> Swap sqlite database with the one you saved before </div>
             <input
               type="text"
               onClick={(e) => {

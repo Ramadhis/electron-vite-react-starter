@@ -1,28 +1,19 @@
 import { db } from "../../database/connection.js";
+import { DDMMYYYY } from "../helper/getDate.js";
 
 const getUser = () => {
   const sql = `
-    SELECT * from users
+    SELECT * from users order by id desc
   `;
 
   const row = db.prepare(sql).all();
   return row;
 };
 
-const backup = async () => {
-  const fs = require("fs");
-  // await db
-  //   .backup(`D:\backup-${Date.now()}.db`)
-  //   .then(() => {
-  //     console.log("backup complete!");
-  //   })
-  //   .catch((err) => {
-  //     console.log("backup failed:", err);
-  //   });
-  fs.copyFile("./database/data.db", "D:dataBackup.js", (err) => {
-    if (err) throw err;
-    console.log("source.txt was copied to destination.txt");
-  });
+const createUser = (args) => {
+  const stmt = db.prepare("INSERT INTO users (name, name_slug ,email, password, profile_picture, role, created_at, updated_at) VALUES (?, ?, ?, ? ,?, ?, ?, ?)");
+  const info = stmt.run(args.name, args.name_slug, args.email, args.password, args.profile_picture ? args.profile_picture : "default.jpg", args.role, DDMMYYYY, DDMMYYYY);
+  return info;
 };
 
-export { getUser, backup };
+export { getUser, createUser };
