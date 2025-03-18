@@ -1,8 +1,9 @@
 import "dotenv/config";
-import { dialog } from "electron";
+import { dialog, session, Notification } from "electron";
 import sqlite3 from "better-sqlite3";
 import { copyFile, constants } from "node:fs";
 import { join } from "path";
+import { authCheck } from "../middleware/session.check.js";
 
 export const selectDirectory = async (event, opts) => {
   return await dialog
@@ -33,39 +34,71 @@ export const openFileFromDirectory = async (event, opts) => {
 };
 
 export const backupDB = async (event, opts) => {
-  const dbPath = process.env.NODE_ENV == "development" ? "./database/data.db" : join(process.resourcesPath, "./database/data.db");
-  const db = sqlite3(dbPath);
-  await db
-    .backup(opts + `/backup-${Date.now()}.db`)
-    .then((result) => {
-      event.sender.send("backup:success", { success: true, data: null });
-    })
-    .catch((err) => {
-      console.log("backup failed:", err);
-      return event.sender.send("backup:success", { success: true, data: null });
-    });
+  session.defaultSession.cookies.get({ url: "https://www.radhians.com" }).then(
+    async (cookies) => {
+      if (cookies.length !== 0) {
+        const dbPath = process.env.NODE_ENV == "development" ? "./database/data.db" : join(process.resourcesPath, "./database/data.db");
+        const db = sqlite3(dbPath);
+        const dbName = `/backup-${Date.now()}.db`;
+        const dbLocation = opts + dbName;
+        await db
+          .backup(dbLocation)
+          .then((result) => {
+            // console.log(result);
+            // return event.sender.send("backup:success", { success: true, data: result, message: `backups stored in ${dbLocation}` });          const NOTIFICATION_TITLE = "Swap Success";
+            const NOTIFICATION_TITLE = "backups Success";
+            const NOTIFICATION_BODY = `backups stored in ${dbLocation}`;
 
-  // console.log(opts);
-  // const dbPath = process.env.NODE_ENV == "development" ? "./database/data.db" : join(process.resourcesPath, "./database/data.db");
-  // const dbPath = "./database/data.db";
-  // console.log(dbPath);
-  // const db = sqlite3(dbPath);
-  // await db
-  //   .backup(opts + `/backup-${Date.now()}.db`)
-  //   .then(() => {
-  //     console.log("backup complete!");
-  //     // event.sender.send("backup:success", { success: true, data: null });
-  //   })
-  //   .catch((err) => {
-  //     console.log("backup failed:", err);
-  //   });
+            return new Notification({
+              title: NOTIFICATION_TITLE,
+              body: NOTIFICATION_BODY,
+            }).show();
+          })
+          .catch((err) => {
+            console.log("backup failed:", err);
+            return event.sender.send("backup:success", { success: false, data: null, message: err });
+          });
+      }
+
+      const NOTIFICATION_TITLE = "INFO";
+      const NOTIFICATION_BODY = "You must login to use this feature";
+
+      return new Notification({
+        title: NOTIFICATION_TITLE,
+        body: NOTIFICATION_BODY,
+      }).show();
+    },
+    (error) => {
+      console.error(error);
+      event.sender.send("backup:succes", { success: false, data: null, message: error });
+    }
+  );
 };
 
 export const swapSqlite = async (event, opts) => {
-  const dbPath = process.env.NODE_ENV == "development" ? "./database/data.db" : join(process.resourcesPath, "./database/data.db");
-  copyFile(opts, dbPath, (err) => {
-    if (err) throw event.sender.send("swap:success", { success: false, data: null, message: err });
-    console.log("source was copied to destination");
-    event.sender.send("swap:success", { success: true, data: null });
-  });
+  //custom auth check, authCheck(accept,reject,error)
+  authCheck(
+    (cookie) => {
+      console.log(cookie);
+      const dbPath = process.env.NODE_ENV == "development" ? "./database/data.db" : join(process.resourcesPath, "./database/data.db");
+      copyFile(opts, dbPath, (err) => {
+        if (err) throw event.sender.send("swap:success", { success: false, data: null, message: err });
+        console.log("source was copied to destination");
+        // event.sender.send("swap:success", { success: true, data: null, message: "swap success, close the application and then run it again" });
+        const NOTIFICATION_TITLE = "Swap Success";
+        const NOTIFICATION_BODY = "close the application and then run it again";
+
+        return new Notification({
+          title: NOTIFICATION_TITLE,
+          body: NOTIFICATION_BODY,
+        }).show();
+      });
+    },
+    () => {
+      event.sender.send("swap:success", { success: false, data: null, message: "You must login to use this feature" });
+    },
+    (err) => {
+      console.error(err);
+    }
+  );
 };

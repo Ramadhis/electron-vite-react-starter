@@ -13,12 +13,12 @@ const Sidebar = () => {
           <ul className="menu bg-base-200 rounded-box w-56">
             <li>
               <Link className="menu-active" to={"/"}>
-                <ChartPieIcon className="w-4 color-base-content" /> Dashboard
+                <ChartPieIcon className="w-4" /> Dashboard
               </Link>
             </li>
             <li>
               <Link to={"/user-management/"}>
-                <UsersIcon className="w-4 color-base-content" /> UserManagement
+                <UsersIcon className="w-4" /> UserManagement
               </Link>
               <ul tabindex="0">
                 <li>
@@ -32,7 +32,7 @@ const Sidebar = () => {
             </li>
             <li>
               <Link to={"/settings/"} className="">
-                <Cog6ToothIcon className="w-4 color-base-content" />
+                <Cog6ToothIcon className="w-4" />
                 Setting
               </Link>
             </li>

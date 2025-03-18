@@ -4,8 +4,9 @@ import Content from "../../components/Content";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { object, string } from "yup";
 import { useNavigate } from "react-router-dom";
+import { toastFire } from "../../components/utils/Toast";
 
-const AddUsers = () => {
+const AddUser = () => {
   const navigateTo = useNavigate();
   const users = window.users;
   const electronAPI = window.electron.ipcRenderer;
@@ -15,6 +16,12 @@ const AddUsers = () => {
     password: "",
     roles: "",
   };
+
+  electronAPI.on("addUser:status", (ev, args) => {
+    if (args.success == true) {
+      return toastFire("Create user success");
+    }
+  });
 
   const onSubmit = async (value) => {
     await electronAPI.send("submit:addUser", {
@@ -53,14 +60,14 @@ const AddUsers = () => {
             <div className="w-full">
               <fieldset className="fieldset">
                 <legend className="fieldset-legend">Name</legend>
-                <Field name="name" id="name" className="input w-full" placeholder="Type here"></Field>
+                <Field name="name" id="name" className="input w-full" placeholder="Type here" required></Field>
                 <p className="fieldset-label">
                   <ErrorMessage name="name"></ErrorMessage>
                 </p>
               </fieldset>
               <fieldset className="fieldset">
                 <legend className="fieldset-legend">Email</legend>
-                <Field name="email" id="email" type="email" className="input w-full" placeholder="Type here"></Field>
+                <Field name="email" id="email" type="email" className="input w-full" placeholder="Type here" required></Field>
                 <p className="fieldset-label">
                   <ErrorMessage name="email"></ErrorMessage>
                 </p>
@@ -70,7 +77,7 @@ const AddUsers = () => {
               {" "}
               <fieldset className="fieldset">
                 <legend className="fieldset-legend">Password</legend>
-                <Field name="password" type="password" id="password" className="input w-full" placeholder="Type here"></Field>
+                <Field name="password" type="password" id="password" className="input w-full" placeholder="Type here" required></Field>
                 <p className="fieldset-label">
                   <ErrorMessage name="password"></ErrorMessage>
                 </p>
@@ -99,4 +106,4 @@ const AddUsers = () => {
   );
 };
 
-export default AddUsers;
+export default AddUser;

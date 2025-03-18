@@ -10,10 +10,16 @@ const getUser = () => {
   return row;
 };
 
+const deleteUsers = (args) => {
+  const stmt = db.prepare("delete from users where name_slug=(?)");
+  const info = stmt.run(args.name_slug);
+  return info;
+};
+
 const createUser = (args) => {
   const stmt = db.prepare("INSERT INTO users (name, name_slug ,email, password, profile_picture, role, created_at, updated_at) VALUES (?, ?, ?, ? ,?, ?, ?, ?)");
   const info = stmt.run(args.name, args.name_slug, args.email, args.password, args.profile_picture ? args.profile_picture : "default.jpg", args.role, DDMMYYYY, DDMMYYYY);
   return info;
 };
 
-export { getUser, createUser };
+export { getUser, createUser, deleteUsers };

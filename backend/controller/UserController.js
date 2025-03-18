@@ -1,4 +1,4 @@
-import { createUser } from "../model/UserModel.js";
+import { createUser, deleteUsers } from "../model/UserModel.js";
 import bcrypt from "bcrypt";
 
 function convertToSlug(Text) {
@@ -14,8 +14,17 @@ export const submitAddUser = (event, opts) => {
     const hash = bcrypt.hashSync(opts.password, salt);
     let create = createUser({ name: opts.name, name_slug: convertToSlug(opts.name), email: opts.email, password: hash, role: opts.roles });
     console.log(create);
-    event.sender.send("addUser:success", { success: true, data: create });
+    event.sender.send("addUser:status", { success: true, data: create });
   } catch (error) {
-    event.sender.send("addUser:success", { success: false });
+    event.sender.send("addUser:status", { success: false });
+  }
+};
+
+export const deleteUserBySlug = (event, opts) => {
+  try {
+    let del = deleteUsers({ name_slug: opts.name_slug });
+    event.sender.send("users:deleted", { success: true, data: del, message: "Delete success" });
+  } catch (error) {
+    event.sender.send("users:deleted", { success: false, message: error });
   }
 };

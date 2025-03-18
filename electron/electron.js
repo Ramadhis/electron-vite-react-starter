@@ -6,8 +6,9 @@ import isDev from "electron-is-dev";
 import * as url from "url";
 let mainWindow;
 import { fileURLToPath } from "url";
-import { submitAddUser } from "../backend/controller/UserController.js";
+import { deleteUserBySlug, submitAddUser } from "../backend/controller/UserController.js";
 import { selectDirectory, backupDB, openFileFromDirectory, swapSqlite } from "../backend/controller/SettingController.js";
+import { login, logout } from "../backend/controller/AuthController.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -56,11 +57,19 @@ app.on("activate", () => {
   }
 });
 
-ipcMain.on("submit:addUser", (ev, opts) => {
-  ev.preventDefault();
-  submitAddUser(ev, opts);
-});
+ipcMain.on("submit:login", (ev, opts) => login(ev, opts));
+ipcMain.on("logout", (ev) => logout(ev));
 ipcMain.on("submit:backup", (ev, opts) => backupDB(ev, opts));
 ipcMain.on("submit:swapDb", (ev, opts) => swapSqlite(ev, opts));
 ipcMain.on("selectDirectory", (ev, opt) => selectDirectory(ev, opt));
 ipcMain.on("openFileFromDirectory", (ev, opt) => openFileFromDirectory(ev, opt));
+
+//users
+ipcMain.on("submit:addUser", (ev, opts) => {
+  ev.preventDefault();
+  submitAddUser(ev, opts);
+});
+ipcMain.on("users:delete", (ev, opts) => {
+  console.log(opts);
+  deleteUserBySlug(ev, opts);
+});

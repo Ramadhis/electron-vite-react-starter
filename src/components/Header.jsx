@@ -3,6 +3,7 @@ import { UserCircleIcon, ArrowLeftStartOnRectangleIcon } from "@heroicons/react/
 
 const Header = () => {
   const [theme, setTheme] = React.useState("dark"); // change to light for production
+  const electronAPI = window.electron.ipcRenderer;
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
@@ -10,6 +11,14 @@ const Header = () => {
   useEffect(() => {
     document.querySelector("html").setAttribute("data-theme", theme);
   }, [theme]);
+
+  electronAPI.on("logout:success", (ev, args) => {
+    return alert("success logout");
+  });
+
+  const logout = async () => {
+    await electronAPI.send("logout");
+  };
 
   return (
     <div className="navbar bg-base-100 sticky top-0 z-10">
@@ -36,10 +45,10 @@ const Header = () => {
               </a>
             </li>
             <li>
-              <a tabIndex="0" role="button">
+              <button onClick={logout} tabIndex="0" role="button">
                 <ArrowLeftStartOnRectangleIcon className="w-4 color-base-content" />
                 Logout
-              </a>
+              </button>
             </li>
           </ul>
         </div>

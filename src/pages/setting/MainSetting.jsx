@@ -13,7 +13,7 @@ const MainSetting = () => {
 
   useEffect(() => {
     if (info.status == true) {
-      alert(info.message);
+      alert(info.data.message);
       setInfo((prev) => {
         return { status: false, data: [] };
       });
@@ -37,20 +37,24 @@ const MainSetting = () => {
     // console.log(args);
     if (args.success == true) {
       setInfo((prev) => {
-        return { status: true, data: args, message: "backup success" };
+        return { status: true, data: { ...args } };
       });
     } else {
-      alert(args.errors);
+      setInfo((prev) => {
+        return { status: true, data: { ...args } };
+      });
     }
   });
   electronAPI.on("swap:success", (ev, args) => {
     // console.log(args);
     if (args.success == true) {
       setInfo((prev) => {
-        return { status: true, data: args, message: "swap success, close the application and then run it again" };
+        return { status: true, data: { ...args } };
       });
     } else {
-      alert(args.message);
+      setInfo((prev) => {
+        return { status: true, data: { ...args } };
+      });
     }
   });
 
@@ -59,7 +63,9 @@ const MainSetting = () => {
     if (args.success == true) {
       setDbFileSelected(args.data.directory[0]);
     } else {
-      alert(args.errors);
+      setInfo((prev) => {
+        return { status: true, data: args };
+      });
     }
   });
 
