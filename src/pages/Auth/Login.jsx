@@ -2,19 +2,23 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { object, string } from "yup";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const navigateTo = useNavigate();
   const electronAPI = window.electron.ipcRenderer;
 
   const initialvalue = {
-    email: "",
-    password: "",
+    email: "admin@mail.com",
+    password: "123",
   };
 
-  electronAPI.on("login:success", () => {
-    console.log("success");
-    return navigateTo("/");
+  electronAPI.on("login:status", (ev, args) => {
+    if (args.success == true) {
+      console.log(args.data);
+      Cookies.set("userData", args.data);
+      return navigateTo("/");
+    }
   });
 
   const onSubmit = (value) => {

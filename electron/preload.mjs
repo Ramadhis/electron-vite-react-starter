@@ -1,7 +1,8 @@
 import { contextBridge, ipcRenderer } from "electron";
+
 import { electronAPI } from "@electron-toolkit/preload";
 import os from "os";
-import { getUser } from "../backend/model/UserModel.js";
+import { getUser, getUserBySlug } from "../backend/model/UserModel.js";
 // Custom APIs for renderer
 const api = {};
 
@@ -24,7 +25,8 @@ if (process.contextIsolated) {
     // });
 
     contextBridge.exposeInMainWorld("users", {
-      getUser: () => getUser(),
+      getUser: (args) => getUser(args),
+      getUserBySlug: (args) => getUserBySlug(args),
     });
   } catch (error) {
     console.error(error);

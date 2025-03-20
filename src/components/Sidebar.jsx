@@ -17,7 +17,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li>
-              <Link to={"/user-management/"}>
+              <Link to={"/user-management"}>
                 <UsersIcon className="w-4" /> UserManagement
               </Link>
               <ul tabindex="0">

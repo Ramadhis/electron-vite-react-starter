@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import Content from "../../components/Content";
 import { XMarkIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import Swal from "sweetalert2";
 import confirmButtonFire from "../../components/utils/ConfirmDialog";
 import { toastFire } from "../../components/utils/Toast";
+import Cookies from "js-cookie";
+import Pagination from "../../components/utils/Pagination";
 
 const MainUsersManagements = () => {
-  const pathname = window.location;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(searchParams.get("page") ? parseInt(searchParams.get("page")) : 1);
+  const location = useLocation();
   const navigateTo = useNavigate();
   const electronAPI = window.electron.ipcRenderer;
   const users = window.users;
-  const [listUsers, setListUser] = useState(users.getUser());
+  const [listUsers, setListUser] = useState([]);
 
   const deleteUsers = async (name_slug) => {
     await electronAPI.send("users:delete", {
@@ -21,11 +25,42 @@ const MainUsersManagements = () => {
 
   electronAPI.on("users:deleted", (ev, args) => {
     toastFire("Delete success");
-    setListUser(users.getUser());
+    setListUser(users.getUser({ currentPage: currentPage }));
   });
+
+  useEffect(() => {
+    setListUser(users.getUser({ currentPage: searchParams.get("page") }));
+    // console.log("MainUserLoc", location);
+  }, [location]);
+
+  useEffect(() => {
+    setSearchParams({
+      page: currentPage,
+    });
+  }, [currentPage]);
+
+  const updateCurrentPage = (page) => {
+    setCurrentPage(page);
+  };
+
+  const updateSearchParamsPage = (page) => {
+    setCurrentPage(page);
+    setSearchParams({ page: currentPage });
+  };
 
   return (
     <Content title={`User Management`}>
+      <div className="flex justify-end">
+        <div className="join mb-5">
+          <div>
+            <label className="input input-sm join-item">
+              <input type="text" placeholder="Search..." />
+            </label>
+            <div className="validator-hint hidden"></div>
+          </div>
+          <button className="btn btn-sm btn-primary join-item">Search</button>
+        </div>
+      </div>
       <div className="overflow-x-auto">
         {/* <Link to={pathname.hash.substring(1)}>aa</Link> */}
         <table className="table table-md table-pin-rows table-pin-cols">
@@ -52,15 +87,11 @@ const MainUsersManagements = () => {
                     <div className="tooltip tooltip-info" data-tip="Edit User">
                       <button
                         onClick={() => {
-                          confirmButtonFire(
-                            `Will you delete ${val.name} users account?`,
-                            () => {
-                              return false;
+                          return navigateTo(`/user-management/edit-user/${val.name_slug}`, {
+                            state: {
+                              prevUrl: location,
                             },
-                            () => {
-                              return false;
-                            }
-                          );
+                          });
                         }}
                         className="btn btn-xs bg-blue-600"
                       >
@@ -101,6 +132,29 @@ const MainUsersManagements = () => {
             </tr>
           </tfoot>
         </table>
+      </div>
+      <div className="flex justify-end">
+        {/* <button
+          className="btn btn-primary"
+          onClick={() => {
+            setCurrentPage((prev) => {
+              return prev + 1;
+            });
+          }}
+        >
+          +
+        </button>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            setCurrentPage((prev) => {
+              return prev - 1;
+            });
+          }}
+        >
+          -
+        </button> */}
+        <Pagination currentPage={currentPage} updateCurrentPage={updateCurrentPage} updateSearchParamsPage={updateSearchParamsPage} />
       </div>
     </Content>
   );

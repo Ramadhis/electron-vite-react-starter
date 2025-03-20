@@ -1,11 +1,12 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 
 const Content = ({ title, children }) => {
   const pathname = window.location.hash;
   var pathnameSplit = pathname.split("/").slice(1);
-
+  const navigateTo = useNavigate();
+  const location = useLocation();
   const urlBreadcrumb = () => {
     var t = pathnameSplit
       .reduce(function (a, b) {
@@ -24,14 +25,6 @@ const Content = ({ title, children }) => {
 
   const back = () => {
     history.back();
-    // console.log(window.location.pathname);
-    // console.log(history.state.url);
-    // if (!history.state.url) {
-    //   return alert("back kosong");
-    // } else {
-    //   history.back();
-    //   return true;
-    // }
   };
 
   const breadcrumbName = (pathnameSplit) => {
@@ -43,6 +36,10 @@ const Content = ({ title, children }) => {
     return breadcrumbText;
   };
 
+  // useEffect(() => {
+  //   console.log("locationNow", location);
+  // }, []);
+
   return (
     <div>
       <div className="mb-2">
@@ -52,7 +49,7 @@ const Content = ({ title, children }) => {
             {urlBreadcrumb().length - 1 >= 1 ? (
               <button
                 onClick={() => {
-                  history.back();
+                  return back();
                 }}
                 className="btn btn-xs bg-primary text-primary-content flex justify-evenly me-2"
               >
@@ -63,10 +60,11 @@ const Content = ({ title, children }) => {
             )}
             {urlBreadcrumb().map((val, index) => {
               return index === urlBreadcrumb().length - 1 ? (
-                <li key={index}>{breadcrumbName(pathnameSplit[index])}</li>
+                <li key={index}>{breadcrumbName(pathnameSplit[index]).split("?")[0]}</li>
               ) : (
                 <li key={index}>
-                  <Link to={val}>{breadcrumbName(pathnameSplit[index])}</Link>
+                  {/* <Link to={val}>{breadcrumbName(pathnameSplit[index]).split("?")[0]}</Link> */}
+                  {breadcrumbName(pathnameSplit[index]).split("?")[0]}
                 </li>
               );
             })}

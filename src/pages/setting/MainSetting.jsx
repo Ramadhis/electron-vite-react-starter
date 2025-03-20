@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import Content from "../../components/Content";
+import { toastFireFailed } from "../../components/utils/Toast";
+import Cookies from "js-cookie";
 
 const MainSetting = () => {
   const electronAPI = window.electron.ipcRenderer;
@@ -13,7 +15,7 @@ const MainSetting = () => {
 
   useEffect(() => {
     if (info.status == true) {
-      alert(info.data.message);
+      toastFireFailed(info.data.message);
       setInfo((prev) => {
         return { status: false, data: [] };
       });

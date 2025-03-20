@@ -1,51 +1,61 @@
-import React, { useEffect } from "react";
-import { useSearchParams, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useSearchParams, useLocation, useParams } from "react-router-dom";
 import Content from "../../components/Content";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { object, string } from "yup";
 import { useNavigate } from "react-router-dom";
 import { toastFire } from "../../components/utils/Toast";
 
-const AddUser = () => {
+const EditUser = () => {
+  const { name_slug } = useParams();
   const navigateTo = useNavigate();
   const users = window.users;
+  const usersData = users.getUserBySlug({ name_slug });
   const electronAPI = window.electron.ipcRenderer;
-  const initialvalue = {
-    name: "",
-    email: "",
-    password: "",
-    roles: "",
-  };
+  const [initialvalue, setInitialValue] = useState({
+    name: usersData.name,
+    email: usersData.email,
+    roles: usersData.role,
+  });
 
-  electronAPI.on("addUser:status", (ev, args) => {
+  electronAPI.on("editUser:status", (ev, args) => {
     if (args.success == true) {
-      return toastFire("Create user success");
+      setTimeout(() => {
+        toastFire(args.message);
+      }, 1000);
+
+      navigateTo("/user-management/");
     }
   });
 
   const onSubmit = async (value) => {
-    await electronAPI.send("submit:addUser", {
+    await electronAPI.send("submit:editUser", {
       name: value.name,
       email: value.email,
-      password: value.password,
       roles: value.roles,
+      name_slug: name_slug,
     });
   };
 
   const validationSchema = object().shape({
     name: string().required(),
     email: string().required(),
-    password: string().required(),
     roles: string().required(),
   });
 
+  useEffect(() => {
+    // console.log(usersData.name);
+    setInitialValue((prev) => {
+      return { name: usersData.name, email: usersData.email, roles: usersData.role };
+    });
+  }, []);
+
   return (
-    <Content title={`Add User`}>
+    <Content title={`Edit User`}>
       <Formik
         initialValues={initialvalue}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           console.log("Form data:", values);
-          resetForm();
           onSubmit(values);
           return false;
         }}
@@ -72,13 +82,6 @@ const AddUser = () => {
             <div className="w-full">
               {" "}
               <fieldset className="fieldset">
-                <legend className="fieldset-legend">Password</legend>
-                <Field name="password" type="password" id="password" className="input w-full" placeholder="Type here" required></Field>
-                <p className="fieldset-label">
-                  <ErrorMessage name="password"></ErrorMessage>
-                </p>
-              </fieldset>
-              <fieldset className="fieldset">
                 <legend className="fieldset-legend">Roles</legend>
                 <Field name="roles" id="roles" as="select" className="input w-full" placeholder="Type here">
                   <option value="">-- select roles --</option>
@@ -102,4 +105,4 @@ const AddUser = () => {
   );
 };
 
-export default AddUser;
+export default EditUser;

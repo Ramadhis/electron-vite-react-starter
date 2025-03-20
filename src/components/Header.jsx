@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { UserCircleIcon, ArrowLeftStartOnRectangleIcon } from "@heroicons/react/24/solid";
+import Cookies from "js-cookie";
+import { toastFire } from "./utils/Toast";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigateTo = useNavigate();
   const [theme, setTheme] = React.useState("dark"); // change to light for production
   const electronAPI = window.electron.ipcRenderer;
   const toggleTheme = () => {
@@ -12,8 +16,9 @@ const Header = () => {
     document.querySelector("html").setAttribute("data-theme", theme);
   }, [theme]);
 
-  electronAPI.on("logout:success", (ev, args) => {
-    return alert("success logout");
+  electronAPI.on("logout:status", (ev, args) => {
+    Cookies.remove("userData", { path: "" });
+    return navigateTo("/login");
   });
 
   const logout = async () => {

@@ -3,7 +3,6 @@ import { session } from "electron";
 export const authCheck = (accept, reject, errors) => {
   session.defaultSession.cookies.get({ url: "https://www.radhians.com" }).then(
     (cookies) => {
-      console.log("tes", cookies);
       if (cookies.length !== 0) {
         return accept();
       }
