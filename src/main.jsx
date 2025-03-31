@@ -13,13 +13,15 @@ import AddUsers from "./pages/users-management/AddUser";
 import MainDashboard from "./pages/dashboard/MainDashboard";
 import Login from "./pages/Auth/Login";
 import EditUser from "./pages/users-management/EditUser";
+import ProtectedLayout from "./components/ProtectedLayout.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <HashRouter>
       <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="/" element={<MainDashboard />}></Route>
+        <Route path="/" element={<ProtectedLayout />}></Route>
+        <Route path="/dashboard" element={<Layout />}>
+          <Route path="/dashboard/" element={<MainDashboard />}></Route>
         </Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/user-management" element={<Layout />}>

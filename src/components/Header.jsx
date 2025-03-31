@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { UserCircleIcon, ArrowLeftStartOnRectangleIcon } from "@heroicons/react/24/solid";
+import { UserCircleIcon, ArrowLeftStartOnRectangleIcon, LockClosedIcon } from "@heroicons/react/24/solid";
 import Cookies from "js-cookie";
 import { toastFire } from "./utils/Toast";
 import { useNavigate } from "react-router-dom";
+import ProfileModal from "./ProfileModal";
+import ChangePasswordModal from "./auth/ChangePasswordModal";
 
 const Header = () => {
   const navigateTo = useNavigate();
@@ -42,12 +44,18 @@ const Header = () => {
               <img alt="Tailwind CSS Navbar component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
             </div>
           </div>
-          <ul tabIndex={0} className="menu menu-md dropdown-content bg-base-100 rounded-box z-[20] mt-3 w-32 p-2 shadow">
+          <ul tabIndex={0} className="menu menu-md dropdown-content bg-base-100 rounded-box z-[20] mt-3 w-44 p-2 shadow">
             <li>
-              <a role="button" tabindex="0">
+              <button onClick={() => document.getElementById("myProfile").showModal()} role="button" tabindex="0">
                 <UserCircleIcon className="w-4 color-base-content" />
                 Profile
-              </a>
+              </button>
+            </li>
+            <li>
+              <button onClick={() => document.getElementById("changePassword").showModal()} tabIndex="0" role="button">
+                <LockClosedIcon className="w-4 color-base-content" />
+                Change Password
+              </button>
             </li>
             <li>
               <button onClick={logout} tabIndex="0" role="button">
@@ -57,6 +65,8 @@ const Header = () => {
             </li>
           </ul>
         </div>
+        <ProfileModal />
+        <ChangePasswordModal />
       </div>
     </div>
   );

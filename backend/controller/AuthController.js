@@ -3,52 +3,46 @@ import { getUserByEmail } from "../model/UserModel.js";
 import bcrypt from "bcrypt";
 
 export const login = async (event, opts) => {
-  const getUserData = getUserByEmail({ email: opts.email });
-
-  if (getUserData) {
-    console.log(getUserData);
-
-    const password_validation = await bcrypt.compare(opts.password, getUserData.password);
-    if (password_validation) {
+  try {
+    const getUserData = getUserByEmail({ email: opts.email });
+    // console.log("ini data user", getUserData);
+    if (getUserData) {
       const cookie = {
         url: "https://www.radhians.com",
         name: "userData",
-        value: {
+        value: JSON.stringify({
           name: getUserData.name,
           name_slug: getUserData.name_slug,
           email: getUserData.email,
           profile_picture: getUserData.profile_picture,
           role: getUserData.role,
           created_at: getUserData.created_at,
-        },
+        }),
       };
-      session.defaultSession.cookies.set(cookie).then(
-        () => {
-          // success
-          event.sender.send("login:status", { success: true, data: JSON.stringify(cookie.value) });
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
+      const password_validation = await bcrypt.compare(opts.password, getUserData.password);
+      // console.log("password validation fail :", password_validation);
+      if (password_validation != false) {
+        return session.defaultSession.cookies.set(cookie).then(
+          () => {
+            // success
+            return event.sender.send("login:status", { status: true, data: cookie.value });
+          },
+          (error) => {
+            return console.error(error);
+          }
+        );
+      }
+      return event.sender.send("login:status", { status: false, message: "Wrong email or password" });
     }
-    console.log(password_validation);
+    event.sender.send("login:status", { status: false, message: "Wrong email or password" });
+    return false;
+  } catch (error) {
+    return event.sender.send("login:status", { status: false, message: error.message });
   }
-
-  console.log("user not found");
-  // session.defaultSession.cookies.set(cookie).then(
-  //   () => {
-  //     // success
-  //     event.sender.send("login:status", { success: true, data: null });
-  //   },
-  //   (error) => {
-  //     console.error(error);
-  //   }
-  // );
 };
 
 export const logout = (event, opts) => {
-  console.log("logout");
+  // console.log("logout");
   session.defaultSession.cookies.remove("https://www.radhians.com", "dummy_name").then(
     () => {
       // success

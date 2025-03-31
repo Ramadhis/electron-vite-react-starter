@@ -11,11 +11,15 @@ import Pagination from "../../components/utils/Pagination";
 const MainUsersManagements = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(searchParams.get("page") ? parseInt(searchParams.get("page")) : 1);
+  const [searchData, setSearchData] = useState(searchParams.get("search") ? searchParams.get("search") : "");
   const location = useLocation();
   const navigateTo = useNavigate();
   const electronAPI = window.electron.ipcRenderer;
   const users = window.users;
   const [listUsers, setListUser] = useState([]);
+  const totalPageCalc = listUsers.length > 0 ? { ...listUsers[0] } : { totalPage: 0 }; // for pagination
+  const totalPage = totalPageCalc.totalPage; // for pagination
+  const userCookie = Cookies.get("userData") ? JSON.parse(Cookies.get("userData")) : null;
 
   const deleteUsers = async (name_slug) => {
     await electronAPI.send("users:delete", {
@@ -29,15 +33,16 @@ const MainUsersManagements = () => {
   });
 
   useEffect(() => {
-    setListUser(users.getUser({ currentPage: searchParams.get("page") }));
+    setListUser(users.getUser({ currentPage: searchParams.get("page"), search: searchParams.get("search") }));
     // console.log("MainUserLoc", location);
   }, [location]);
 
   useEffect(() => {
     setSearchParams({
       page: currentPage,
+      search: searchData,
     });
-  }, [currentPage]);
+  }, [currentPage, searchData]);
 
   const updateCurrentPage = (page) => {
     setCurrentPage(page);
@@ -45,7 +50,9 @@ const MainUsersManagements = () => {
 
   const updateSearchParamsPage = (page) => {
     setCurrentPage(page);
-    setSearchParams({ page: currentPage });
+    setSearchParams((prev) => {
+      return { ...prev, page: currentPage };
+    });
   };
 
   return (
@@ -53,12 +60,24 @@ const MainUsersManagements = () => {
       <div className="flex justify-end">
         <div className="join mb-5">
           <div>
-            <label className="input input-sm join-item">
-              <input type="text" placeholder="Search..." />
+            <label className="input">
+              <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.3-4.3"></path>
+                </g>
+              </svg>
+              <input
+                value={searchData}
+                onChange={(e) => {
+                  return setSearchData(e.target.value);
+                }}
+                type="search"
+                className="grow"
+                placeholder="Search"
+              />
             </label>
-            <div className="validator-hint hidden"></div>
           </div>
-          <button className="btn btn-sm btn-primary join-item">Search</button>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -75,51 +94,61 @@ const MainUsersManagements = () => {
             </tr>
           </thead>
           <tbody>
-            {listUsers.map((val, index) => {
-              return (
-                <tr key={index}>
-                  <th>{val.id}</th>
-                  <td>{val.name}</td>
-                  <td>{val.email}</td>
-                  <td>{val.role}</td>
-                  <td>{val.updated_at}</td>
-                  <td>
-                    <div className="tooltip tooltip-info" data-tip="Edit User">
-                      <button
-                        onClick={() => {
-                          return navigateTo(`/user-management/edit-user/${val.name_slug}`, {
-                            state: {
-                              prevUrl: location,
-                            },
-                          });
-                        }}
-                        className="btn btn-xs bg-blue-600"
-                      >
-                        <PencilSquareIcon className="w-4 text-white" />
-                      </button>
-                    </div>
-                    <div className="tooltip tooltip-error" data-tip="Delete User">
-                      <button
-                        onClick={() => {
-                          confirmButtonFire(
-                            `Will you delete ${val.name} users account?`,
-                            () => {
-                              return deleteUsers(val.name_slug);
-                            },
-                            () => {
-                              return false;
-                            }
-                          );
-                        }}
-                        className="btn btn-xs bg-red-700"
-                      >
-                        <XMarkIcon className="w-4 text-white" />
-                      </button>
-                    </div>
+            {listUsers.length > 0 ? (
+              listUsers.map((val, index) => {
+                return (
+                  <tr key={index}>
+                    <th>{val.id}</th>
+                    <td>{val.name}</td>
+                    <td>{val.email}</td>
+                    <td>{val.role}</td>
+                    <td>{val.updated_at}</td>
+                    <td>
+                      <div className="tooltip tooltip-info" data-tip="Edit User">
+                        <button
+                          onClick={() => {
+                            return navigateTo(`/user-management/edit-user/${val.name_slug}`, {
+                              state: {
+                                prevUrl: location,
+                              },
+                            });
+                          }}
+                          className="btn btn-xs bg-blue-600"
+                        >
+                          <PencilSquareIcon className="w-4 text-white" />
+                        </button>
+                      </div>
+                      <div className="tooltip tooltip-error" data-tip="Delete User">
+                        <button
+                          onClick={() => {
+                            confirmButtonFire(
+                              `Will you delete ${val.name} users account?`,
+                              () => {
+                                return deleteUsers(val.name_slug);
+                              },
+                              () => {
+                                return false;
+                              }
+                            );
+                          }}
+                          className="btn btn-xs bg-red-700"
+                        >
+                          <XMarkIcon className="w-4 text-white" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <>
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    No data found
                   </td>
                 </tr>
-              );
-            })}
+              </>
+            )}
           </tbody>
           <tfoot>
             <tr>
@@ -133,29 +162,11 @@ const MainUsersManagements = () => {
           </tfoot>
         </table>
       </div>
-      <div className="flex justify-end">
-        {/* <button
-          className="btn btn-primary"
-          onClick={() => {
-            setCurrentPage((prev) => {
-              return prev + 1;
-            });
-          }}
-        >
-          +
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            setCurrentPage((prev) => {
-              return prev - 1;
-            });
-          }}
-        >
-          -
-        </button> */}
-        <Pagination currentPage={currentPage} updateCurrentPage={updateCurrentPage} updateSearchParamsPage={updateSearchParamsPage} />
-      </div>
+      {listUsers.length > 0 ? (
+        <div className="flex justify-end">
+          <Pagination currentPage={currentPage} totalPage={totalPage} updateCurrentPage={updateCurrentPage} updateSearchParamsPage={updateSearchParamsPage} />
+        </div>
+      ) : null}
     </Content>
   );
 };

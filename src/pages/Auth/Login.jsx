@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { object, string } from "yup";
 import { useNavigate } from "react-router-dom";
@@ -6,18 +6,25 @@ import Cookies from "js-cookie";
 
 const Login = () => {
   const navigateTo = useNavigate();
+  const [message, setMessage] = useState("");
   const electronAPI = window.electron.ipcRenderer;
 
   const initialvalue = {
-    email: "admin@mail.com",
-    password: "123",
+    email: "",
+    password: "",
   };
 
   electronAPI.on("login:status", (ev, args) => {
-    if (args.success == true) {
-      console.log(args.data);
+    if (args.status == true) {
+      // console.log(args.data);
       Cookies.set("userData", args.data);
-      return navigateTo("/");
+      return navigateTo("/dashboard");
+    } else {
+      console.log(args.message);
+      setMessage(args.message);
+      setTimeout(() => {
+        setMessage("");
+      }, 5000);
     }
   });
 
@@ -39,6 +46,14 @@ const Login = () => {
         <div className="flex justify-center items-center">
           <img className="w-32 mx-4" src={"./assets/logo.png"} alt="" />
         </div>
+        {message != "" ? (
+          <div role="alert" className="alert alert-error mt-3">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{message}</span>
+          </div>
+        ) : null}
         <Formik
           initialValues={initialvalue}
           onSubmit={async (values, { setSubmitting, resetForm }) => {

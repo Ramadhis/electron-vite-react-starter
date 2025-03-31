@@ -4,7 +4,7 @@ import Content from "../../components/Content";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { object, string } from "yup";
 import { useNavigate } from "react-router-dom";
-import { toastFire } from "../../components/utils/Toast";
+import { toastFire, toastFireFailed } from "../../components/utils/Toast";
 
 const AddUser = () => {
   const navigateTo = useNavigate();
@@ -18,8 +18,10 @@ const AddUser = () => {
   };
 
   electronAPI.on("addUser:status", (ev, args) => {
-    if (args.success == true) {
-      return toastFire("Create user success");
+    if (args.status == true) {
+      return toastFire(args.message);
+    } else {
+      return toastFireFailed(args.message);
     }
   });
 

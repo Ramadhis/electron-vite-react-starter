@@ -12,7 +12,7 @@ const Sidebar = () => {
         <div className="p-1 pb-2 flex">
           <ul className="menu bg-base-200 rounded-box w-56">
             <li>
-              <Link className="menu-active" to={"/"}>
+              <Link className="menu-active" to={"/dashboard"}>
                 <ChartPieIcon className="w-4" /> Dashboard
               </Link>
             </li>

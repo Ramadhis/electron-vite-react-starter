@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Content from "../../components/Content";
 
 const MainDashboard = () => {
   const navigate = useNavigate();
@@ -9,12 +10,12 @@ const MainDashboard = () => {
   };
 
   return (
-    <div>
-      MainDashboard
-      <button className="btn bg-amber-500" onClick={login}>
+    <Content title={`Dashboard`}>
+      Welcome back User
+      {/* <button className="btn bg-amber-500" onClick={login}>
         tes
-      </button>
-    </div>
+      </button> */}
+    </Content>
   );
 };
 

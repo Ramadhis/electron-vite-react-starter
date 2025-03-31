@@ -6,7 +6,7 @@ import isDev from "electron-is-dev";
 import * as url from "url";
 let mainWindow;
 import { fileURLToPath } from "url";
-import { deleteUserBySlug, submitAddUser, submitEditUser } from "../backend/controller/UserController.js";
+import { deleteUserBySlug, submitAddUser, submitEditUser, submitEditProfile, submitChangePassword } from "../backend/controller/UserController.js";
 import { selectDirectory, backupDB, openFileFromDirectory, swapSqlite } from "../backend/controller/SettingController.js";
 import { login, logout } from "../backend/controller/AuthController.js";
 
@@ -72,6 +72,14 @@ ipcMain.on("submit:addUser", (ev, opts) => {
 ipcMain.on("submit:editUser", (ev, opts) => {
   ev.preventDefault();
   submitEditUser(ev, opts);
+});
+ipcMain.on("submit:editProfile", (ev, opts) => {
+  ev.preventDefault();
+  submitEditProfile(ev, opts);
+});
+ipcMain.on("submit:changePassword", (ev, opts) => {
+  ev.preventDefault();
+  submitChangePassword(ev, opts);
 });
 ipcMain.on("users:delete", (ev, opts) => {
   deleteUserBySlug(ev, opts);

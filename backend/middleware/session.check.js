@@ -4,7 +4,7 @@ export const authCheck = (accept, reject, errors) => {
   session.defaultSession.cookies.get({ url: "https://www.radhians.com" }).then(
     (cookies) => {
       if (cookies.length !== 0) {
-        return accept();
+        return accept(cookies);
       }
       //return if user not login
       return reject();

@@ -11,12 +11,12 @@ export const selectDirectory = async (event, opts) => {
       properties: ["openDirectory"],
     })
     .then((result) => {
-      console.log(result.filePaths);
+      // console.log(result.filePaths);
       event.sender.send("directory:selected", { success: true, data: { directory: result.filePaths } });
     })
     .catch((err) => {
       console.log(err);
-      event.sender.send("directory:selected", { success: false, data: null, errors: err });
+      event.sender.send("directory:selected", { success: false, data: null, errors: err.message });
     });
 };
 
@@ -24,12 +24,12 @@ export const openFileFromDirectory = async (event, opts) => {
   return await dialog
     .showOpenDialog({ properties: ["openFile"], filters: [{ name: "Custom File Type", extensions: ["db", "sqlite", "sqlite3"] }] })
     .then((result) => {
-      console.log(result.filePaths);
+      // console.log(result.filePaths);
       event.sender.send("dbFile:selected", { success: true, data: { directory: result.filePaths } });
     })
     .catch((err) => {
       console.log(err);
-      event.sender.send("dbFile:selected", { success: false, data: null, errors: err });
+      event.sender.send("dbFile:selected", { success: false, data: null, errors: err.message });
     });
 };
 
@@ -55,7 +55,7 @@ export const backupDB = async (event, opts) => {
         })
         .catch((err) => {
           console.log("backup failed:", err);
-          return event.sender.send("backup:success", { success: false, data: null, message: err });
+          return event.sender.send("backup:success", { success: false, data: null, message: err.message });
         });
     },
     () => {
@@ -71,7 +71,7 @@ export const swapSqlite = async (event, opts) => {
   //custom auth check, authCheck(accept,reject,error)
   authCheck(
     (cookie) => {
-      console.log(cookie);
+      // console.log(cookie);
       const dbPath = process.env.NODE_ENV == "development" ? "./database/data.db" : join(process.resourcesPath, "./database/data.db");
       copyFile(opts, dbPath, (err) => {
         if (err) throw event.sender.send("swap:success", { success: false, data: null, message: err });
