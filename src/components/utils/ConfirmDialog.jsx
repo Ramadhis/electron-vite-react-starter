@@ -2,6 +2,7 @@ import Swal from "sweetalert2";
 
 const confirmButton = Swal.mixin({
   customClass: {
+    title: "text-[10px]",
     confirmButton: "cursor-pointer bg-green-600 p-1 text-white font-semibold rounded-sm px-8 me-2 border border-green-600 text-sm hover:border-white",
     denyButton: "cursor-pointer bg-red-600 border border-red-600 hover:border-white p-1 text-white font-semibold rounded-sm px-8 text-sm",
   },

@@ -35,6 +35,9 @@ const ProfileModal = () => {
       setUserCookie(Cookies.get("userData") ? JSON.parse(Cookies.get("userData")) : null); //update userCookie state
     } else {
       setError(args);
+      setTimeout(() => {
+        setError("");
+      }, 10000);
     }
   });
 
@@ -99,10 +102,6 @@ const ProfileModal = () => {
                       <ErrorMessage name="email"></ErrorMessage>
                     </p>
                   </fieldset>
-                  {/* <fieldset className="fieldset">
-                    <legend className="fieldset-legend">Role</legend>
-                    <input value={user.role} className="input w-full" placeholder="Type here" disabled={true}></input>
-                  </fieldset> */}
                 </div>
               </div>
               <div className="mt-4 w-full hidden">

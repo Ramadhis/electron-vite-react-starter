@@ -11,7 +11,7 @@ import Pagination from "../../components/utils/Pagination";
 const MainUsersManagements = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(searchParams.get("page") ? parseInt(searchParams.get("page")) : 1);
-  const [searchData, setSearchData] = useState(searchParams.get("search") ? searchParams.get("search") : "");
+  const [searchData, setSearchData] = useState(searchParams.get("search") != null ? searchParams.get("search") : "");
   const location = useLocation();
   const navigateTo = useNavigate();
   const electronAPI = window.electron.ipcRenderer;
@@ -21,6 +21,7 @@ const MainUsersManagements = () => {
   const totalPage = totalPageCalc.totalPage; // for pagination
   const userCookie = Cookies.get("userData") ? JSON.parse(Cookies.get("userData")) : null;
 
+  //user name slug
   const deleteUsers = async (name_slug) => {
     await electronAPI.send("users:delete", {
       name_slug: name_slug,
@@ -32,9 +33,9 @@ const MainUsersManagements = () => {
     setListUser(users.getUser({ currentPage: currentPage }));
   });
 
+  //set list data / load data user
   useEffect(() => {
-    setListUser(users.getUser({ currentPage: searchParams.get("page"), search: searchParams.get("search") }));
-    // console.log("MainUserLoc", location);
+    setListUser(users.getUser({ currentPage: currentPage, search: searchData }));
   }, [location]);
 
   useEffect(() => {
