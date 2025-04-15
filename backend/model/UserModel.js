@@ -31,7 +31,7 @@ const getUser = (args) => {
 
   const currentPage = args.currentPage;
   const search = args.search;
-  const limitPerPage = 2;
+  const limitPerPage = 15;
   const offset = (currentPage - 1) * limitPerPage;
 
   let query =
