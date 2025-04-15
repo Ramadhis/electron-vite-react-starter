@@ -17,6 +17,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
+    // autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(app.getAppPath(), "electron/preload.mjs"),
       contextIsolation: true,

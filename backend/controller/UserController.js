@@ -1,6 +1,7 @@
 import { createUser, deleteUsers, updateUsers, updateProfile, checkNameAvailable, checkEmailAvailable, getUserBySlug, updatePassword, getUserFullDataBySlug } from "../model/UserModel.js";
 import bcrypt from "bcrypt";
 import { session } from "electron";
+import logging from "electron-log/main.js";
 
 function convertToSlug(Text) {
   return Text.toLowerCase()
@@ -17,6 +18,7 @@ export const submitAddUser = (event, opts) => {
     event.sender.send("addUser:status", { status: true, data: create, message: "Create user success" });
   } catch (error) {
     console.log(error);
+    logging.error(error.message);
     event.sender.send("addUser:status", { status: false, message: error.message });
   }
 };
@@ -27,6 +29,7 @@ export const submitEditUser = (event, opts) => {
     // console.log(update);
     event.sender.send("editUser:status", { success: true, data: update, message: "Edit success" });
   } catch (error) {
+    logging.error(error.message);
     event.sender.send("editUser:status", { success: false, message: error.message });
   }
 };
@@ -36,6 +39,7 @@ export const deleteUserBySlug = (event, opts) => {
     let del = deleteUsers({ name_slug: opts.name_slug });
     event.sender.send("users:deleted", { success: true, data: del, message: "Delete success" });
   } catch (error) {
+    logging.error(error.message);
     event.sender.send("users:deleted", { success: false, message: error.message });
   }
 };
@@ -57,6 +61,7 @@ export const submitChangePassword = async (event, opts) => {
     }
     return event.sender.send("changePassword:status", { status: false, message: "The current password is incorrect, please enter the password when logging into this account." });
   } catch (error) {
+    logging.error(error.message);
     event.sender.send("changePassword:status", { status: false, message: error.message });
   }
 };
@@ -118,6 +123,7 @@ export const submitEditProfile = (event, opts) => {
         },
         (error) => {
           console.error(error);
+          logging.error(error);
         }
       );
 
@@ -125,6 +131,7 @@ export const submitEditProfile = (event, opts) => {
     }
     return event.sender.send("editProfile:status", { status: false, message: "Name or Email empty" });
   } catch (error) {
+    logging.error(error.message);
     return event.sender.send("editProfile:status", { status: false, message: error.message });
   }
 };

@@ -46,7 +46,7 @@ const Header = () => {
           </div>
           <ul tabIndex={0} className="menu menu-md dropdown-content bg-base-100 rounded-box z-[20] mt-3 w-44 p-2 shadow">
             <li>
-              <button onClick={() => document.getElementById("myProfile").showModal()} role="button" tabindex="0">
+              <button onClick={() => document.getElementById("myProfile").showModal()} role="button" tabIndex="0">
                 <UserCircleIcon className="w-4 color-base-content" />
                 Profile
               </button>

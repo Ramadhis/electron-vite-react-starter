@@ -4,6 +4,7 @@ import sqlite3 from "better-sqlite3";
 import { copyFile, constants } from "node:fs";
 import { join } from "path";
 import { authCheck } from "../middleware/session.check.js";
+import logging from "electron-log/main.js";
 
 export const selectDirectory = async (event, opts) => {
   return await dialog
@@ -15,7 +16,8 @@ export const selectDirectory = async (event, opts) => {
       event.sender.send("directory:selected", { success: true, data: { directory: result.filePaths } });
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
+      logging.error(err.message);
       event.sender.send("directory:selected", { success: false, data: null, errors: err.message });
     });
 };
@@ -28,7 +30,7 @@ export const openFileFromDirectory = async (event, opts) => {
       event.sender.send("dbFile:selected", { success: true, data: { directory: result.filePaths } });
     })
     .catch((err) => {
-      console.log(err);
+      logging.error(err.message);
       event.sender.send("dbFile:selected", { success: false, data: null, errors: err.message });
     });
 };
@@ -55,6 +57,7 @@ export const backupDB = async (event, opts) => {
         })
         .catch((err) => {
           console.log("backup failed:", err);
+          logging.error(err.message);
           return event.sender.send("backup:success", { success: false, data: null, message: err.message });
         });
     },
@@ -63,6 +66,7 @@ export const backupDB = async (event, opts) => {
     },
     (err) => {
       console.error(err);
+      logging.error(err);
     }
   );
 };
@@ -91,6 +95,7 @@ export const swapSqlite = async (event, opts) => {
     },
     (err) => {
       console.error(err);
+      logging.error(err);
     }
   );
 };

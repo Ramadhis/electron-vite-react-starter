@@ -33,12 +33,10 @@ const Sidebar = () => {
               <Link className={menuActive("/user-management")} to={"/user-management"}>
                 <UsersIcon className="w-4" /> User Management
               </Link>
-              <ul tabindex="0">
+              <ul>
                 <li>
                   <Link className={menuActive("/user-management/add-user/")} to={"/user-management/add-user/"}>
-                    <div role="button" tabindex="0">
-                      Add User
-                    </div>
+                    <div role="button">Add User</div>
                   </Link>
                 </li>
               </ul>

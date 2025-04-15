@@ -64,6 +64,7 @@
     "dotenv": "^16.4.7",
     "electron-dl": "^4.0.0",
     "electron-is-dev": "^3.0.1",
+    "electron-log": "^5.3.3",
     "electron-webpack": "^2.8.2",
     "formik": "^2.4.6",
     "js-cookie": "^3.0.5",

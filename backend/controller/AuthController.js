@@ -1,6 +1,7 @@
 import { session } from "electron";
 import { getUserByEmail } from "../model/UserModel.js";
 import bcrypt from "bcrypt";
+import logging from "electron-log/main.js";
 
 export const login = async (event, opts) => {
   try {
@@ -37,6 +38,8 @@ export const login = async (event, opts) => {
     event.sender.send("login:status", { status: false, message: "Wrong email or password" });
     return false;
   } catch (error) {
+    //save log
+    logging.error(error.message);
     return event.sender.send("login:status", { status: false, message: error.message });
   }
 };
@@ -49,6 +52,7 @@ export const logout = (event, opts) => {
       event.sender.send("logout:status", { success: true, data: null });
     },
     (error) => {
+      logging.error(error);
       console.error(error);
     }
   );

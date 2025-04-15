@@ -3652,6 +3652,11 @@ electron-is-dev@^3.0.1:
   resolved "https://registry.npmjs.org/electron-is-dev/-/electron-is-dev-3.0.1.tgz"
   integrity sha512-8TjjAh8Ec51hUi3o4TaU0mD3GMTOESi866oRNavj9A3IQJ7pmv+MJVmdZBFGw4GFT36X7bkqnuDNYvkQgvyI8Q==
 
+electron-log@^5.3.3:
+  version "5.3.3"
+  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-5.3.3.tgz#323f5e70b3658d683a0f51f26867dc077a823aa3"
+  integrity sha512-ZOnlgCVfhKC0Nef68L0wDhwhg8nh5QkpEOA+udjpBxcPfTHGgbZbfoCBS6hmAgVHTAWByHNPkHKpSbEOPGZcxA==
+
 electron-publish@25.1.7:
   version "25.1.7"
   resolved "https://registry.npmjs.org/electron-publish/-/electron-publish-25.1.7.tgz"

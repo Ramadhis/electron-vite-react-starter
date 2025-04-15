@@ -68,22 +68,22 @@ const Login = () => {
           validationSchema={validationSchema}
         >
           <Form>
-            <fieldset class="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box">
-              <legend class="fieldset-legend">Login</legend>
+            <fieldset className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box">
+              <legend className="fieldset-legend">Login</legend>
 
-              <label class="fieldset-label">Email</label>
+              <label className="fieldset-label">Email</label>
               <Field name="email" id="email" type="email" className="input w-full" placeholder="Type here"></Field>
               <p className="fieldset-label">
                 <ErrorMessage name="email"></ErrorMessage>
               </p>
 
-              <label class="fieldset-label">Password</label>
+              <label className="fieldset-label">Password</label>
               <Field name="password" type="password" id="password" className="input w-full" placeholder="Type here"></Field>
               <p className="fieldset-label">
                 <ErrorMessage name="password"></ErrorMessage>
               </p>
 
-              <button type="submit" class="btn btn-neutral mt-4">
+              <button type="submit" className="btn btn-neutral mt-4">
                 Login
               </button>
             </fieldset>
